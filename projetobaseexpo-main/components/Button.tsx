@@ -15,7 +15,7 @@ export default function Button({label,theme, onPress}){
 
     return(
         <View style = {Styles.botaoContainer}>
-            <Pressable style = {Styles.botao} onPress={()=>{alert('Você apertou o botão!')}}>
+            <Pressable style = {Styles.botao} onPress={()=>onPress}>
                 <Text style = {Styles.labelBotao}>{label}</Text>
             </Pressable>
         </View>
@@ -39,7 +39,7 @@ const Styles = StyleSheet.create({
         height: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
 
     iconeBotao: {

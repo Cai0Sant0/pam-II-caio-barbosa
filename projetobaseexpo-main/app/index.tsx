@@ -10,6 +10,8 @@ import { useState } from 'react';
 
 export default function App() {
 
+  const [showAppOptions, setShowAppOptions] = useState(false);
+
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
 
   const pickImageAsync = async ()=>{
@@ -20,6 +22,7 @@ export default function App() {
 
     if(!resultado.canceled){
       setImagemSelecionada(resultado.assets[0].uri);
+      setShowAppOptions(true);
     }
     else{
       alert("Você não selecionou nehnuma imagem");
@@ -31,11 +34,15 @@ export default function App() {
     <View style={styles.container}>
        <View style = {styles.imageContainer}>
           <ImageViewer imagem={PorImagem} imagemSelecionada = {imagemSelecionada}/>
-       </View>
+      </View>
+          {showAppOptions ? (
+        <View/>
+      ) : (
        <View style = {styles.footerContainer}>
             <Button theme={"primario"} label={"Escolha uma foto"} onPress={pickImageAsync}/>
-            <Button label={"Use essa foto"}/>
+            <Button label={"Use essa foto"} onPress = {()=> setShowAppOptions(true)}/>
        </View>
+      )}
       <StatusBar style="auto" />
     </View>
   );
