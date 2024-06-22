@@ -15,7 +15,7 @@ export default function Button({label,theme, onPress}){
 
     return(
         <View style = {Styles.botaoContainer}>
-            <Pressable style = {Styles.botao} onPress={()=>onPress}>
+            <Pressable style = {Styles.botao} onPress={onPress}>
                 <Text style = {Styles.labelBotao}>{label}</Text>
             </Pressable>
         </View>

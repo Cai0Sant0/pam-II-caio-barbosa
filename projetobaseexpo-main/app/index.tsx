@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image} from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const PorImagem = require('../assets/images/background-image.png');
 
@@ -56,7 +57,7 @@ export default function App() {
 
 
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
        <View style = {styles.imageContainer}>
           <ImageViewer imagem={PorImagem} imagemSelecionada = {imagemSelecionada}/>
           {pickedEmoji && <EmojiSticker imageSize={40} stickerSource = {pickedEmoji}/>}
@@ -67,7 +68,7 @@ export default function App() {
           {showAppOptions ? (
             <View style = {styles.optionsContainer}>
               <View style = {styles.optionsRow}>
-                  <IconButton icon= "refresh" label= "Resetar" onPress={onreset}></IconButton>
+                  <IconButton icon= "refresh" label= "Resetar" onPress={onReset}></IconButton>
                    <CircleButton onPress={onAddSticker}></CircleButton>
                   <IconButton icon= "save-alt" label= "Salvar" onPress={onSaveImageAsync}></IconButton>
               </View>
@@ -79,7 +80,7 @@ export default function App() {
        </View>
       )}
       <StatusBar style="auto" />
-    </View>
+    </GestureHandlerRootView>
   );
 }
 
