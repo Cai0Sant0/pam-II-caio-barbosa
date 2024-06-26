@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image} from 'react-native';
+import { StyleSheet, Text, View, Image, Platform} from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const PorImagem = require('../assets/images/background-image.png');
@@ -7,14 +7,25 @@ const PorImagem = require('../assets/images/background-image.png');
 import ImageViewer from '../components/ImageViewer';
 import Button from '../components/Button';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import CircleButton from '../components/circleButton';
 import IconButton from '../components/iconButton';
 import EmojiPicker from "../components/emojiPicker";
 import EmojiList from "../components/emojiList";
 import EmojiSticker from "../components/emojiSticker";
+import * as MediaLibrary from 'expo-media-library';
+import { captureRef } from 'react-native-view-shot';
+import domtoimage from 'dom-to-image';
 
 export default function App() {
+
+  const imageRef = useRef();
+
+  const [status, requestPermission] = MediaLibrary.usePermissions();
+
+  if(status === null){
+    requestPermission();
+  }
 
   const [pickedEmoji, setPickedEmoji] = useState(null);
 
@@ -37,7 +48,38 @@ export default function App() {
   }
 
   const onSaveImageAsync = async () => {
-    
+    if(Platform.OS !== 'web'){
+      try{
+        const localURI = await captureRef(imageRef,{
+          height: 440,
+          quality: 1
+        });
+        await MediaLibrary.saveToLibraryAsync(localURI);
+        if(localURI){
+          alert("Imagem salva!");
+        }
+      }
+      catch(erro){
+        console.log(erro);
+      }
+    }
+    else{
+      try{
+        const dataUrl = await domtoimage.toJpeg(imageRef.current, {
+          quality: 0.95,
+          width: 320,
+          height: 440,
+        });
+
+        let link = document.createElement("a");
+        link.download = 'Imagem-Modificada.jpeg';
+        link.href = dataUrl;
+        link.click();
+      }
+      catch(erro){
+        console.log(erro);
+      }
+    }
   }
 
   const pickImageAsync = async ()=>{
@@ -59,8 +101,10 @@ export default function App() {
   return (
     <GestureHandlerRootView style={styles.container}>
        <View style = {styles.imageContainer}>
+        <View ref={imageRef} collapsable={false}>
           <ImageViewer imagem={PorImagem} imagemSelecionada = {imagemSelecionada}/>
           {pickedEmoji && <EmojiSticker imageSize={40} stickerSource = {pickedEmoji}/>}
+        </View>
           <EmojiPicker isVisible={isModalVisible} onClose = {onModalClose}>
               <EmojiList onSelect={setPickedEmoji} onCloseModal = {onModalClose}/>
           </EmojiPicker>
@@ -79,7 +123,7 @@ export default function App() {
             <Button label={"Use essa foto"} onPress = {()=> setShowAppOptions(true)}/>
        </View>
       )}
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
     </GestureHandlerRootView>
   );
 }
